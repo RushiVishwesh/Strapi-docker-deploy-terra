@@ -68,7 +68,7 @@ resource "aws_instance" "web" {
   }
 
   tags = {
-    Name = "StrapiDocker"
+    Name = "StrapiDockerterra"
   }
 }
 
