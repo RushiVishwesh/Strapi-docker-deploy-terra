@@ -72,11 +72,22 @@ resource "aws_instance" "web" {
   }
 }
 
-output "private_key" {
-  value     = tls_private_key.example.private_key_pem
-  sensitive = true
+resource "aws_eip" "strapi_eip" {
+  instance = aws_instance.web.id
 }
 
-output "instance_ip" {
-  value = aws_instance.web.public_ip
+resource "aws_route53_record" "contentecho_record" {
+  zone_id = "Z06607023RJWXGXD2ZL6M"
+  name    = "www.vishweshrushi.contentecho.in"
+  type    = "A"
+  ttl     = "300"
+
+  records = [aws_eip.strapi_eip.public_ip]
 }
+
+output "private_key" {
+  value     = tls_private_key.example.private_key_pem
+  sensitive = false
+}
+
+
