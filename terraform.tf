@@ -66,7 +66,6 @@ resource "aws_instance" "strapi" {
       "sudo docker run -d -p 1337:1337 vishweshrushi/strapi:latest"
 
       "sudo apt install nginx -y",
-      COPY /src/app/build/* /var/www/html
       "sudo rm /etc/nginx/sites-available/default",
       "cat <<EOF | sudo tee /etc/nginx/sites-available/default
        server {
