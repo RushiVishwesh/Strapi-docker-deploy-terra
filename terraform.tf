@@ -82,7 +82,7 @@ resource "aws_instance" "strapi" {
           }
       }
       EOT
-      EOF
+      EOF,
       "sudo systemctl restart nginx",
       "sudo apt install certbot python3-certbot-nginx -y",
     ]
