@@ -67,20 +67,22 @@ resource "aws_instance" "strapi" {
 
       "sudo apt install nginx -y",
       "sudo rm /etc/nginx/sites-available/default",
-      "cat <<EOF | sudo tee /etc/nginx/sites-available/default
-       server {
-            listen 80 VishweshRushi.contentecho.in;
-            listen [::]:80 default_server;
-            root /var/www/html;
-            index index.html index.htm;
-            location / {
-                   proxy_pass http://localhost:1337;
-            }
-            location /admin {
-                   proxy_pass http://localhost:1337/admin;
-            }
-       }
-       EOF ",
+      <<-EOF
+      cat <<EOT | sudo tee /etc/nginx/sites-available/default
+      server {
+          listen 80;
+          server_name VishweshRushi.contentecho.in;
+          root /var/www/html;
+          index index.html index.htm;
+          location / {
+              proxy_pass http://localhost:1337;
+          }
+          location /admin {
+              proxy_pass http://localhost:1337/admin;
+          }
+      }
+      EOT
+      EOF
       "sudo systemctl restart nginx",
       "sudo apt install certbot python3-certbot-nginx -y",
     ]
