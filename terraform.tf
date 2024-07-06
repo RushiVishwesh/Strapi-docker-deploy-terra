@@ -70,10 +70,10 @@ resource "aws_instance" "strapi" {
       <<-EOF
       cat <<EOT | sudo tee /etc/nginx/sites-available/default
       server {
-          listen 80;
-          server_name VishweshRushi.contentecho.in;
+          listen 80 default_server;
+          listen [::]:80 default_server;
           root /var/www/html;
-          index index.html index.htm;
+          index index.html index.html;
           location / {
               proxy_pass http://localhost:1337;
           }
