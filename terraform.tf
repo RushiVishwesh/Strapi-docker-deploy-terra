@@ -44,7 +44,7 @@ resource "aws_security_group" "strapi_terra_sg_vishwesh" {
   }
 }
 
-resource "aws_instance" "strapi" {
+resource "aws_instance" "web" {
   ami           = "ami-008616ec4a2c6975e"
   instance_type = "t3.small"
   key_name      = aws_key_pair.terra_key_strapi.key_name
@@ -63,43 +63,20 @@ resource "aws_instance" "strapi" {
       "sudo apt install docker.io -y",
       "sudo usermod -aG docker ubuntu",
       "sudo docker pull vishweshrushi/strapi:latest",
-      "sudo docker run -d -p 1337:1337 vishweshrushi/strapi:latest",
-
-      "sudo apt install nginx -y",
-      "sudo rm /etc/nginx/sites-available/default",
-      <<-EOF
-      cat <<EOT | sudo tee /etc/nginx/sites-available/default
-      server {
-          listen 80 default_server;
-          listen [::]:80 default_server;
-          root /var/www/html;
-          index index.html index.html;
-          location / {
-              proxy_pass http://localhost:1337;
-          }
-          location /admin {
-              proxy_pass http://localhost:1337/admin;
-          }
-      }
-      EOT
-      EOF 
-      ,
-      "sudo systemctl restart nginx",
-      "sudo apt install certbot python3-certbot-nginx -y",
+      "sudo docker run -d -p 1337:1337 vishweshrushi/strapi:latest"
     ]
   }
 
   tags = {
-    Name = "Strapi-Docker-terra-nginx-vishwesh"
+    Name = "StrapiTerraformInstance"
   }
 }
 
 output "private_key" {
   value     = tls_private_key.example.private_key_pem
-  sensitive = false
+  sensitive = true
 }
 
 output "instance_ip" {
-  value = aws_instance.strapi.public_ip
+  value = aws_instance.web.public_ip
 }
-
