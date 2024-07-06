@@ -44,7 +44,7 @@ resource "aws_security_group" "strapi_terra_sg_vishwesh" {
   }
 }
 
-resource "aws_instance" "web" {
+resource "aws_instance" "strapi" {
   ami           = "ami-008616ec4a2c6975e"
   instance_type = "t3.small"
   key_name      = aws_key_pair.terra_key_strapi.key_name
@@ -64,25 +64,41 @@ resource "aws_instance" "web" {
       "sudo usermod -aG docker ubuntu",
       "sudo docker pull vishweshrushi/strapi:latest",
       "sudo docker run -d -p 1337:1337 vishweshrushi/strapi:latest"
+
+      "sudo apt install nginx -y",
+      COPY /src/app/build/* /var/www/html
+      "sudo rm /etc/nginx/sites-available/default",
+      "cat <<EOF | sudo tee /etc/nginx/sites-available/default
+       server {
+            listen 80 VishweshRushi.contentecho.in;
+            listen [::]:80 default_server;
+            root /var/www/html;
+            index index.html index.htm;
+            location / {
+                   proxy_pass http://localhost:1337;
+            }
+            location /admin {
+                   proxy_pass http://localhost:1337/admin;
+            }
+       }
+       EOF ",
+      "sudo systemctl restart nginx",
+      "sudo apt install certbot python3-certbot-nginx -y",
     ]
   }
 
   tags = {
-    Name = "StrapiDockerterra"
+    Name = "Strapi-Docker-terra-nginx-vishwesh"
   }
-}
-
-resource "aws_eip" "strapi_eip" {
-  instance = aws_instance.web.id
 }
 
 resource "aws_route53_record" "contentecho_record" {
   zone_id = "Z06607023RJWXGXD2ZL6M"
-  name    = "www.vishweshrushi.contentecho.in"
+  name    = "vishweshrushi"
   type    = "A"
   ttl     = "300"
 
-  records = [aws_eip.strapi_eip.public_ip]
+  records = [aws_instance.strapi.public_ip]
 }
 
 output "private_key" {
@@ -90,4 +106,6 @@ output "private_key" {
   sensitive = false
 }
 
-
+output "instance_ip" {
+  value = aws_instance.strapi.public_ip
+}
