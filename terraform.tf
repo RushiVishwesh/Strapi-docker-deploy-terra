@@ -63,7 +63,7 @@ resource "aws_instance" "strapi" {
       "sudo apt install docker.io -y",
       "sudo usermod -aG docker ubuntu",
       "sudo docker pull vishweshrushi/strapi:latest",
-      "sudo docker run -d -p 1337:1337 vishweshrushi/strapi:latest"
+      "sudo docker run -d -p 1337:1337 vishweshrushi/strapi:latest",
 
       "sudo apt install nginx -y",
       "sudo rm /etc/nginx/sites-available/default",
@@ -82,7 +82,7 @@ resource "aws_instance" "strapi" {
           }
       }
       EOT
-      EOF,
+      EOF
       "sudo systemctl restart nginx",
       "sudo apt install certbot python3-certbot-nginx -y",
     ]
