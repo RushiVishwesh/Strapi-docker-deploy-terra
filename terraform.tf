@@ -91,15 +91,6 @@ resource "aws_instance" "strapi" {
   }
 }
 
-resource "aws_route53_record" "contentecho_record" {
-  zone_id = "Z06607023RJWXGXD2ZL6M"
-  name    = "vishweshrushi"
-  type    = "A"
-  ttl     = "300"
-
-  records = [aws_instance.strapi.public_ip]
-}
-
 output "private_key" {
   value     = tls_private_key.example.private_key_pem
   sensitive = false
