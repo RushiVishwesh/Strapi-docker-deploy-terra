@@ -102,23 +102,6 @@ resource "aws_route53_record" "vishweshrushi" {
   records = [aws_instance.strapi.public_ip]
 }
 
-resource "null_resource" "certbot" {
-  depends_on = [aws_route53_record.vishweshrushi]
-
-  provisioner "remote-exec" {
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = tls_private_key.example.private_key_pem
-      host        = aws_instance.strapi.public_ip
-    }
-    inline = [
-      "sudo apt install certbot python3-certbot-nginx -y",
-      "sudo certbot --nginx -d vishweshrushi.contentecho.in --non-interactive --agree-tos -m rushivishwesh02@gmail.com"
-    ]
-  }
-}
-
 output "private_key" {
   value     = tls_private_key.example.private_key_pem
   sensitive = true
