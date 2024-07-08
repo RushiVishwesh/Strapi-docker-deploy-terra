@@ -25,12 +25,20 @@ resource "aws_security_group" "strapi_terra_sg_vishwesh" {
   }
 
   ingress {
-    description = "Custom Port"
+    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   } 
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     description = "Custom Port"
@@ -113,7 +121,6 @@ resource "null_resource" "certbot" {
       host        = aws_instance.strapi.public_ip
     }
     inline = [
-      "sleep 60",  // Add delay to ensure DNS propagation
       "sudo apt install certbot python3-certbot-nginx -y",
       "sudo certbot --nginx -d vishweshrushi.contentecho.in --non-interactive --agree-tos -m rushivishwesh02@gmail.com"
     ]
